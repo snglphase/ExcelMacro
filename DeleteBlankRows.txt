@@ -1,0 +1,18 @@
+Sub DeleteBlankRows()
+'----------------------------------------------------------------------
+'DESCRIPTION: Delete an entire row in Excel if the entire row is blank.
+'HOW TO USE: Select the sheet you want to clean, then run this macro.
+'DEVELOPER: Ryan Wells (wellsr.com)
+'----------------------------------------------------------------------
+Dim MyRange As Range
+Dim MyRow As Range
+
+Application.ScreenUpdating = False
+Set MyRange = Selection.SpecialCells(xlCellTypeBlanks) 'select all blank cells
+For Each MyRow In MyRange.Rows 'for each row with a blank cell
+    If WorksheetFunction.CountA(MyRow.EntireRow) = 0 Then 'if no data in any column, then
+        MyRow.EntireRow.Delete 'delete entire row
+    End If
+Next MyRow
+Application.ScreenUpdating = True
+End Sub
