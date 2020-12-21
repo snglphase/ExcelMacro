@@ -1,0 +1,134 @@
+Sub Update_SOF()
+'
+' Update_SOF Macro
+'
+' turn off screen updating while Macro runs
+'
+    Application.ScreenUpdating = False
+'
+       
+'Delete top rows'
+'
+    Rows("1:28").Select
+    Selection.Delete Shift:=xlUp
+'
+'select range'
+'
+    Range("A1").Select
+    Range(Selection, Selection.End(xlDown)).Select
+    Range(Selection, Selection.End(xlToRight)).Select
+'
+'reformat data'
+'
+    With Selection.Font
+        .Name = "Calibri"
+        .Size = 8
+    End With
+    With Selection
+        .HorizontalAlignment = xlGeneral
+        .VerticalAlignment = xlCenter
+    End With
+    Columns("A:I").Select
+    Columns("A:I").EntireColumn.AutoFit
+'
+'Change column headings
+'
+    ActiveCell.FormulaR1C1 = "Account Name"
+    Range("A1").Select
+    ActiveCell.FormulaR1C1 = "Account Number"
+'
+'create table'
+'
+    Range("A1").Select
+    Range(Selection, Selection.End(xlDown)).Select
+    Range(Selection, Selection.End(xlToRight)).Select
+    ActiveSheet.ListObjects.Add(, Selection, , xlYes).Name = _
+        "TblUdate"
+'
+'Separate WBS from Names'
+'
+    Columns("B:D").Select
+    Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
+    Range("A2").Select
+    Range(Selection, Selection.End(xlDown)).Select
+    Selection.TextToColumns Destination:=Range("B2"), DataType:=xlDelimited, _
+        TextQualifier:=xlDoubleQuote, ConsecutiveDelimiter:=False, Tab:=True, _
+        Semicolon:=False, Comma:=False, Space:=False, Other:=True, OtherChar _
+        :=":", FieldInfo:=Array(Array(1, 1), Array(2, 1)), TrailingMinusNumbers:=True
+'
+'Create Account Names'
+'
+    Columns("B:C").Select
+    Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
+    Range("C2").Select
+    ActiveCell.FormulaR1C1 = "=[@Column2]&"" ""&[@Column3]"
+'
+'Put WBS numbers and names in first two columns
+'
+    
+    Application.ScreenUpdating = False
+    Range("B2").Select
+    ActiveCell.FormulaR1C1 = "=TRIM([@Column1])"
+    Range(Selection, Selection.End(xlDown)).Select
+    Application.CutCopyMode = False
+    Selection.Copy
+    Range("A2").Select
+    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+        :=False, Transpose:=False
+    Range("B2").Select
+    Range(Selection, Selection.End(xlDown)).Select
+    Selection.ClearContents
+    
+    Range("B2").Select
+    ActiveCell.FormulaR1C1 = "=TRIM([@Column5])"
+  
+    Range("B2").Select
+    Range(Selection, Selection.End(xlDown)).Select
+    Application.CutCopyMode = False
+    Selection.Copy
+    Range("B2").Select
+    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+        :=False, Transpose:=False
+
+'
+'Finalize Formatting
+'
+    Columns("C:F").Select
+    Application.CutCopyMode = False
+    Selection.Delete Shift:=xlToLeft
+    Range("TblUdate[[#Headers],[Account Number]]").Select
+    Range("TblUdate[[#Headers],[Column4]]").Select
+    ActiveCell.FormulaR1C1 = "Account Name"
+    Range("TblUdate[[#Headers],[Total Obligations (Incl. Comm)]]").Select
+    ActiveCell.FormulaR1C1 = "Total Obligation" & Chr(10) & "Expenditures"
+    Columns("D:J").Select
+    Selection.Style = "Currency"
+    Columns("A:J").Select
+    Columns("A:J").EntireColumn.AutoFit
+    Range("TblUdate[[#Headers],[Account Number]]").Select
+'
+'Still in Beta
+    Range("A1").Select
+    ActiveSheet.Name = "DataUpdate"
+    Range("TblUdate").Select
+    Selection.Copy
+    Sheet1.Select
+    Range("A3").Select
+    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+        :=False, Transpose:=False
+    Sheet1.Name = Format(Date, "MMMDD")
+    Range("A3").Select
+    Sheets("DataUpdate").Delete
+    Application.ScreenUpdating = False
+
+'
+'turn screen updateing back on
+'
+Application.ScreenUpdating = True
+'
+        
+End Sub
+
+
+
+
